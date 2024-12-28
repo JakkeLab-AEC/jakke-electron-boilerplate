@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { setIPCElectronTestHandler } from './mainArea/ipcHandler/ipcElectronTestHandler';
 import path from 'path';
+import os from 'os';
 
 if (require('electron-squirrel-startup')) app.quit();
 
@@ -9,10 +10,17 @@ let mainWindow: BrowserWindow | null;
 const createWindow = () => {
   console.log(path.join(__dirname, 'preload.js'));
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 800,
+    minWidth: 800,
+    minHeight: 600,
+    title: 'Jakke-Electron-Three',
+    titleBarStyle: os.platform() == 'win32'? 'hidden' : 'hiddenInset',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),  // preload 스크립트 설정
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: true,
+      devTools: !app.isPackaged,
     },
   });
   

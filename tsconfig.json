@@ -12,6 +12,7 @@
         "mainArea/*": ["src/mainArea/*"]
       },
       "esModuleInterop": true,
+      "allowJs": true,
     },
     "include": ["src/**/*.ts", "src/main.ts", "src/renderer.ts"],
     "exclude": ["node_modules"]

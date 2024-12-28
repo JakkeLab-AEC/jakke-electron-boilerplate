@@ -1,30 +1,23 @@
 import React, { useEffect, useState } from "react"
+import {ThreeViewPort} from './view/component/threeViewport/threeViewport'
+import {Header} from './view/component/header/header';
+import {appInfo} from '../appConfig'
+import {Sidebar} from './view/sidebar/sidebar';
+import {ModalOverlay} from './homescreenitems/modalOverlay';
 
 export const HomeScreen = () => {
-    const [receivedMessage, setMessage] = useState<string>('');
-    const ipcTest = async () => {
-        const message = await window.electronIPCElectronTest.sendMessage();
-        if(message) {
-            setMessage(message);
-        }
-    }
-
     return (
-        <div className="p-2 flex flex-col gap-2">
-            <div>
-                Hello, this is jakke's electron boilerplate.
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <div style={{position: 'absolute', width:'100%'}}>
+                <Header appName={appInfo.ApplicationName} />
             </div>
-            <hr/>
-            <div>
-                <button className="border" onClick={ipcTest}>IPC Test</button>
+            <div id="main-sidebar" style={{position:'absolute', justifyContent: 'center', top: 64, bottom: 16}}>
+                <Sidebar />
             </div>
             <div>
-                If ipc handler works well, the message will appear below.
+                <ThreeViewPort />
             </div>
-            <hr/>
-            <div>
-                {receivedMessage}
-            </div>
+            <ModalOverlay />
         </div>
     )
 }
