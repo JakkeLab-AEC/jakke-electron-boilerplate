@@ -1,34 +1,23 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { setIPCElectronTestHandler } from './mainArea/ipcHandler/ipcElectronTestHandler';
 import path from 'path';
+import { config } from 'dotenv';
+import { createBrowserWindow } from './mainArea/appController/utils/windowCreater';
 
 if (require('electron-squirrel-startup')) app.quit();
 
-let mainWindow: BrowserWindow | null;
-
-const createWindow = () => {
-  console.log(path.join(__dirname, 'preload.js'));
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),  // preload 스크립트 설정
-    },
-  });
-  
-  if (!app.isPackaged) {
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../.vite/index.html'));
-  }
-  
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-};
+// Resolve envs
+config();
 
 app.on('ready', () => {
-  createWindow();
+  createBrowserWindow({
+    id: 'main-window',
+    type: !app.isPackaged ? 'web' : 'local',
+    isVisible: true,
+    url: 'http://localhost:3000',
+    localFilePath: path.join(__dirname, '../.vite/index.html'),
+    preloadScriptPath: path.join(__dirname, 'preload.js')
+  });
 
   setIPCElectronTestHandler(ipcMain);
 });
@@ -36,11 +25,5 @@ app.on('ready', () => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
   }
 });
